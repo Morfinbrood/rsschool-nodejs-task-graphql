@@ -18,3 +18,5 @@ export const createGqlResponseSchema = {
     },
   ),
 };
+
+// init commit
