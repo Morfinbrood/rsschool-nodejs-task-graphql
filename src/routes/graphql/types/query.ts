@@ -13,8 +13,7 @@ export const RootQueryType = new GraphQLObjectType({
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(MemberType))),
       resolve: async (parent, args, context) => {
         try {
-          const memberTypes = await context.prisma.memberType.findMany();
-          return memberTypes;
+          return context.prisma.memberType.findMany();
         } catch (error) {
           console.error('Error in memberTypes resolver:', error);
           throw error;
@@ -33,11 +32,7 @@ export const RootQueryType = new GraphQLObjectType({
     users: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(UserType))),
       resolve: async (parent, args, context) => {
-        const users = await context.prisma.user.findMany();
-        users.forEach((user) => {
-          context.loaders.userLoader.prime(user.id, user);
-        });
-        return users;
+        return context.prisma.user.findMany();
       },
     },
     user: {
@@ -52,11 +47,7 @@ export const RootQueryType = new GraphQLObjectType({
     posts: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(PostType))),
       resolve: async (parent, args, context) => {
-        const posts = await context.prisma.post.findMany();
-        posts.forEach((post) => {
-          context.loaders.postLoader.prime(post.id, post);
-        });
-        return posts;
+        return context.prisma.post.findMany();
       },
     },
     post: {
@@ -71,11 +62,7 @@ export const RootQueryType = new GraphQLObjectType({
     profiles: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(ProfileType))),
       resolve: async (parent, args, context) => {
-        const profiles = await context.prisma.profile.findMany();
-        profiles.forEach((profile) => {
-          context.loaders.profileLoader.prime(profile.id, profile);
-        });
-        return profiles;
+        return context.prisma.profile.findMany();
       },
     },
     profile: {

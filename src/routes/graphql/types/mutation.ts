@@ -22,12 +22,10 @@ export const MutationType = new GraphQLObjectType({
         dto: { type: new GraphQLNonNull(ChangeUserInputType) },
       },
       resolve: async (parent, { id, dto }, context) => {
-        const user = await context.prisma.user.update({
+        return context.prisma.user.update({
           where: { id },
           data: dto,
         });
-        context.loaders.userLoader.clear(id).prime(id, user);
-        return user;
       },
     },
     changeProfile: {
@@ -37,14 +35,10 @@ export const MutationType = new GraphQLObjectType({
         dto: { type: new GraphQLNonNull(ChangeProfileInputType) },
       },
       resolve: async (parent, { id, dto }, context) => {
-        const profile = await context.prisma.profile.update({
+        return context.prisma.profile.update({
           where: { id },
           data: dto,
         });
-        context.loaders.profileLoader
-          .clear(profile.userId)
-          .prime(profile.userId, profile);
-        return profile;
       },
     },
     changePost: {
@@ -54,12 +48,10 @@ export const MutationType = new GraphQLObjectType({
         dto: { type: new GraphQLNonNull(ChangePostInputType) },
       },
       resolve: async (parent, { id, dto }, context) => {
-        const post = await context.prisma.post.update({
+        return context.prisma.post.update({
           where: { id },
           data: dto,
         });
-        context.loaders.postLoader.clear(id).prime(id, post);
-        return post;
       },
     },
     createUser: {
@@ -68,11 +60,9 @@ export const MutationType = new GraphQLObjectType({
         dto: { type: new GraphQLNonNull(CreateUserInputType) },
       },
       resolve: async (parent, args, context) => {
-        const user = await context.prisma.user.create({
+        return context.prisma.user.create({
           data: args.dto,
         });
-        context.loaders.userLoader.prime(user.id, user);
-        return user;
       },
     },
     createProfile: {
@@ -81,11 +71,9 @@ export const MutationType = new GraphQLObjectType({
         dto: { type: new GraphQLNonNull(CreateProfileInputType) },
       },
       resolve: async (parent, { dto }, context) => {
-        const profile = await context.prisma.profile.create({
+        return context.prisma.profile.create({
           data: dto,
         });
-        context.loaders.profileLoader.prime(profile.id, profile);
-        return profile;
       },
     },
     createPost: {
@@ -94,11 +82,9 @@ export const MutationType = new GraphQLObjectType({
         dto: { type: new GraphQLNonNull(CreatePostInputType) },
       },
       resolve: async (parent, { dto }, context) => {
-        const post = await context.prisma.post.create({
+        return context.prisma.post.create({
           data: dto,
         });
-        context.loaders.postsByAuthorIdLoader.clear(dto.authorId);
-        return post;
       },
     },
     deleteUser: {
@@ -110,7 +96,6 @@ export const MutationType = new GraphQLObjectType({
         await context.prisma.user.delete({
           where: { id },
         });
-        context.loaders.userLoader.clear(id);
         return `User ${id} deleted successfully.`;
       },
     },
@@ -135,7 +120,6 @@ export const MutationType = new GraphQLObjectType({
         await context.prisma.profile.delete({
           where: { id },
         });
-        context.loaders.profileLoader.clear(id);
         return `Profile ${id} deleted successfully.`;
       },
     },
@@ -152,8 +136,6 @@ export const MutationType = new GraphQLObjectType({
             authorId: authorId,
           },
         });
-        context.loaders.userSubscribedToLoader.clear(userId);
-        context.loaders.subscribedToUserLoader.clear(authorId);
         return `Subscribed successfully`;
       },
     },
@@ -172,8 +154,6 @@ export const MutationType = new GraphQLObjectType({
             },
           },
         });
-        context.loaders.userSubscribedToLoader.clear(userId);
-        context.loaders.subscribedToUserLoader.clear(authorId);
         return `Unsubscribed successfully`;
       },
     },
